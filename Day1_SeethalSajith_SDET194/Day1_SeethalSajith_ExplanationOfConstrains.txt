@@ -1,0 +1,151 @@
+Please find below the explanation .
+
+1)CREATE TABLE categories (
+    categoryid SERIAL PRIMARY KEY,      
+    categoryName VARCHAR(100) NOT NULL, 
+    description TEXT                    
+);
+In the categories table,
+categoryID is the unique identifier, so it’s set as PRIMARY KEY.
+SERIAL makes it auto-increment.
+categoryName is marked NOT NULL because every category should have a name.
+description is optional, hence no constraint.
+
+
+2)CREATE TABLE customers (
+    customerID VARCHAR(100) PRIMARY KEY,         
+    companyName VARCHAR(100) NOT NULL,
+    contactName VARCHAR(100),                   
+    contactTitle VARCHAR(100),                  
+    city VARCHAR(50),                           
+    country VARCHAR(50)     
+ );
+ In the customers table 
+ customerID is the unique identifier, so it’s set as PRIMARY KEY.
+ companyName is marked NOT NULL because every company should have a name.
+ others are optional, hence no constraint.
+ 
+ 
+3)CREATE TABLE employees (
+    employeeID SERIAL PRIMARY KEY,                
+    employeeName VARCHAR(50) NOT NULL,               
+    firstName VARCHAR(50) NOT NULL,          
+    title VARCHAR(100),                           
+    country VARCHAR(50),                        
+    reportsTo INTEGER,                          
+    
+   FOREIGN KEY (reportsTo) REFERENCES employees(employeeID)
+);
+ In the employees table 
+ employeeID is the unique identifier, so it’s set as PRIMARY KEY.
+ employeeName and  firstName is marked NOT NULL because it is required fields
+ The reportsTo column must contain an employeeID that already exists in the same table.
+ It creates a self-referencing relationship — used to represent hierarchical structures like:
+ Employee reports to a Manager
+ A manager is also an employee in the same table
+ others are optional, hence no constraint.
+ 
+4)CREATE TABLE shippers (
+    shipperID SERIAL PRIMARY KEY,
+    companyName VARCHAR(100) NOT NULL
+    
+);
+In the shippers table 
+ shipperID is the unique identifier, so it’s set as PRIMARY KEY.
+ employeeName  is marked NOT NULL because it is required field
+ 
+5)CREATE TABLE products (
+    productID SERIAL PRIMARY KEY,                
+    productName VARCHAR(100) NOT NULL, 
+	quantityPerUnit VARCHAR(50),   
+	unitPrice DECIMAL(10, 2) DEFAULT 0.00,
+	discontinued BOOLEAN DEFAULT FALSE,
+    categoryid INTEGER,                   
+    
+     FOREIGN KEY (categoryid)
+        REFERENCES categories(categoryid)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+);
+
+In the products table 
+ productID is the unique identifier, so it’s set as PRIMARY KEY.
+ productName  is marked NOT NULL because it is required field
+
+Defines a foreign key constraint in the products table that links the categoryid column to the categoryid column in the categories table. 
+It ensures that every categoryid in the products table must exist in the categories table, preserving integrity. The clause ON DELETE SET NULL means that if a category is deleted from the categories table, any associated products will not be deleted, but their categoryid will be set to NULL, effectively removing the category reference while keeping the product.
+The ON UPDATE CASCADE clause means that if a categoryid value in the categories table is updated, 
+the change will automatically cascade to all matching categoryid values in the products table, keeping the data consistent across both tables.
+
+6)CREATE TABLE orders (
+    orderid SERIAL PRIMARY KEY,                     
+    customerid VARCHAR(10),                         
+    employeeid INTEGER,                             
+    orderdate DATE,                                
+    requireddate DATE,                              
+    shippeddate DATE,                               
+    shipperid INTEGER,                             
+    freight DECIMAL(10, 2) DEFAULT 0.00,           
+
+    
+    CONSTRAINT fk_order_customer FOREIGN KEY (customerid)
+        REFERENCES customers(customerid)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
+
+    CONSTRAINT fk_order_employee FOREIGN KEY (employeeid)
+        REFERENCES employees(employeeid)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
+
+    CONSTRAINT fk_order_shipper FOREIGN KEY (shipperid)
+        REFERENCES shippers(shipperid)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+);
+
+In the orders table 
+ orderid is the unique identifier, so it’s set as PRIMARY KEY.
+ The constraint fk_order_customer defines a foreign key relationship between the orders table and the customers table. 
+ It ensures that the customerid in the orders table must match an existing customerid in the customers table.
+ The clause ON DELETE SET NULL means that if a customer record is deleted, the corresponding customerid in the orders table will be set to NULL, preserving the order record but removing its link to the deleted customer. 
+ The clause ON UPDATE CASCADE means that if a customerid in the customers table is updated, 
+ the same change will automatically be applied to the related rows in the orders table to keep the data consistent.
+ Similarly the employeeid and shipperid.
+ 
+ 7)CREATE TABLE order_details (
+    orderid INTEGER NOT NULL,                         
+    productid INTEGER NOT NULL,                       
+    unitprice DECIMAL(10, 2) DEFAULT 0.00,            
+    quantity INTEGER DEFAULT 1,                       
+    discount DECIMAL(4, 2) DEFAULT 0.00,             
+
+    
+    CONSTRAINT pk_order_details PRIMARY KEY (orderid, productid),
+
+  
+    CONSTRAINT fk_order FOREIGN KEY (orderid)
+        REFERENCES orders(orderid)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+   
+    CONSTRAINT fk_product FOREIGN KEY (productid)
+        REFERENCES products(productid)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+In the order_details table 
+ orderid is marked NOT NULL because it is required field
+ 
+CONSTRAINT pk_order_details PRIMARY KEY (orderid, productid),
+
+This defines a composite primary key constraint named pk_order_details on the order_details table. 
+It means that the combination of orderid and productid must be unique for each row in the table and cannot contain NULL values.
+This ensures that each product can appear only once per order, preventing duplicate entries of the same product within a single order.
+While neither orderid nor productid alone is unique in this table, their combined values uniquely identify each record. 
+This setup is common in junction tables that represent many-to-many relationships, such as orders containing multiple products.
+
+FOREIGN KEY:This constraint ensures that order_details always references a valid order, and any deletion or update in the orders table is automatically reflected in order_details, 
+keeping the data consistent across related tables.
