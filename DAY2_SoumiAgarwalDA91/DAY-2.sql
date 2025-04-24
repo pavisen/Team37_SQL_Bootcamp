@@ -5,7 +5,8 @@
 ●	Drop column linkedin_profile  */
 
 --Add a new column linkedin_profile to employees table to store LinkedIn URLs as varchar.
-ALTER TABLE employees ADD COLUMN linkedin_profile VARCHAR DEFAULT 0;
+ALTER TABLE employees 
+ADD COLUMN linkedin_profile VARCHAR GENERATED ALWAYS AS ('http://linkedin.com/user' || employeeid::text) STORED;
 --Change the linkedin_profile column data type from VARCHAR to TEXT.
 ALTER TABLE employees ALTER COLUMN linkedin_profile TYPE TEXT;
 --Add unique, not null constraint to linkedin_profile
@@ -34,7 +35,8 @@ ALTER TABLE employees DROP COLUMN linkedin_profile;
  /* Filtering
 Get all customers from Germany.
 Find all customers from France or Spain
-Retrieve all orders placed in 2014(based on order_date), and either have freight greater than 50 or the shipped date available (i.e., non-NULL)  
+Retrieve all orders placed in 2014(based on order_date), and either have freight greater than 50 or
+the shipped date available (i.e., non-NULL)  
 (Hint: EXTRACT(YEAR FROM order_date)) */
 
 --Get all customers from Germany
