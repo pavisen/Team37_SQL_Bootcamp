@@ -1,0 +1,54 @@
+Please see Constraints detail for the entities mentioned in ERD,
+
+Primary Key Constraints: (A column of set of columns in a table that uniquely identifies a record)
+
+1. categories_pk:
+    Primary Key of the table - categories representing column - category_id
+    category_id is defined as serial, so it is auto-incremented by default
+
+2. shippers_pk:
+    Primary Key of the table - shippers representing column - shipper_id
+
+3. employees_pk:
+    Primary Key of the table - employees representing column - employee_id
+    employee_id is defined as serial, so it is auto-incremented by default
+
+4. products_pk:
+    Primary Key of the table - products representing column - product_id
+    It's a mandatory attribute should not contain NULL values
+
+5. customers_pk:
+    Primary Key of the table - customers representing column - customer_id
+
+6. orders_pk:
+    Primary Key of the table - orders representing column - order_id
+
+7. order_details_pk:
+    Primary Key of the table - order_details representing columns - order_id and product_id
+    It is otherwise called composite key, since it has more than one primary key.
+    Composite key uniquely identifies a record in order_details.
+
+Foreign Key Constraints: (A column in one table representing a primary key column of another table)
+
+1: customer_id_fk:
+   Represents foreign key colum - customer_id of table orders referring to customer_id column of customers entity
+
+2: employee_id_fk:
+   Represents foreign key colum - employee_id of table orders referring to employee_id column of employees entity
+
+3: shipper_id_fk:
+   Represents foreign key colum - shipper_id of table orders referring to shipper_id column of shippers entity
+
+4: orderId_fk:
+   Represents foreign key colum - order_id of table order_details referring to order_id column of orders entity
+
+5: product_id_fk:
+    Represents foreign key colum - product_id of table order_details referring to product_id column of products entity
+
+6: category_id_fk:
+    Represents foreign key colum - category_id of table products referring to category_id column of categories entity
+
+
+
+
+
