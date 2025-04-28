@@ -94,16 +94,55 @@ DO UPDATE
 		categoryid=EXCLUDED.categoryid;
 		-----------------------------------
 select * from public.products where productid=100
+/*
+6)      Write a MERGE query:
+Create temp table with name:  ‘updated_products’ and insert values as below:
+ 
+productID	productName	quantityPerUnit	unitPrice	discontinued	categoryID
+100	Wheat bread	10	20	1	3
+101	White bread	5 boxes	19.99	0	3
+102	Midnight Mango Fizz	24 - 12 oz bottles	19	0	1
+103	Savory Fire Sauce	12 - 550 ml bottles	10	0	2
+ 
+●	 Update the price and discontinued status for from below table ‘updated_products’ only if there are matching products and updated_products .discontinued =0 
 
+●	If there are matching products and updated_products .discontinued =1 then delete 
+ 
+●	 Insert any new products from updated_products that don’t exist in products only if updated_products .discontinued =0.
 
+*/
+ 
+ CREATE TEMP TABLE updated_products
+ (productid integer,
+   productname character varying(50) ,
+    quantityperunit character varying(100) ,
+    unitprice numeric(10,2),
+    discontinued integer,
+    categoryid integer);
 
+INSERT INTO updated_products(productid,productname,quantityperunit,unitprice,discontinued,categoryid) VALUES 
+(100,'Wheat bread','10',20,1,3),
+(101,'White bread','5 boxes',19.99,0,3),
+(102,'Midnight Mango Fizz','24 - 12 oz bottles',19,0,1),
+(103,'Savory Fire Sauce','12 - 550 ml bottles',10,0,2)
 
-
-
-
-
-
-
+MERGE INTO products P
+	USING ( 
+	
+		SELECT * FROM updated_products
+)	
+AS INCOMING(productid,productname,quantityperunit,unitprice,discontinued,categoryid)
+ON P.productid=INCOMING.productid
+WHEN MATCHED AND INCOMING.discontinued=1
+	THEN DELETE 
+WHEN MATCHED AND INCOMING.discontinued=0
+	THEN UPDATE
+	SET productname=INCOMING.productname,
+		quantityperunit=INCOMING.quantityperunit,
+		unitprice=INCOMING.unitprice
+WHEN NOT MATCHED AND INCOMING.discontinued=0 
+	THEN INSERT (productid,productname,quantityperunit,unitprice,discontinued,categoryid)
+	VALUES(INCOMING.productid,INCOMING.productname,INCOMING.quantityperunit,INCOMING.unitprice,INCOMING.discontinued,INCOMING.categoryid)
 
 
 
