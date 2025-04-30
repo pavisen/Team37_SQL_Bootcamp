@@ -3,6 +3,12 @@
 ALTER Table employees
 add column Linkedin_profile varchar;
 
+UPDATE employees
+SET linkedin_profile = 'https://www.linkedin.com/'||employeename
+where linkedin_profile IS NULL
+
+select * from employees
+
 /*1.Change the linkedin_profile column data type from VARCHAR to TEXT.*/
 
 ALTER table employees
@@ -15,8 +21,10 @@ add unique(linkedin_profile);
 ALTER TABLE employees
 alter column linkedin_profile set NOT NULL;
 
-ALTER TABLE employees
-modify column linkedin_profile text not null
+alter table employees
+Drop column linkedin_profile
+
+
 
 
 /*2. Querying (Select)
