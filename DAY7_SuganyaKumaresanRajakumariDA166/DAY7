@@ -1,0 +1,44 @@
+SELECT * FROM employees
+SELECT * FROM orders
+
+SELECT o.employee_id,e.first_name||' '||e.last_name AS employee_name,COUNT(o.order_id) AS total_sales,
+RANK() OVER(
+ORDER BY COUNT(o.order_id) DESC
+) AS employee_rank
+FROM orders o
+INNER JOIN employees e ON o.employee_id = e.employee_id
+GROUP BY o.employee_id,e.first_name,e.last_name
+
+
+
+
+SELECT 
+order_id,customer_id,order_date,freight,
+lag(freight) over(partition by customer_id order by freight) AS previous_freight,
+freight - lag(freight) over(partition by customer_id order by freight) AS lag_freight
+FROM orders
+
+SELECT 
+order_id,customer_id,order_date,freight,
+lead(freight) over(partition by customer_id order by freight) AS next_freight,
+freight - lead(freight) over(partition by customer_id order by freight) AS lead_freight
+FROM orders
+
+
+SELECT * FROM categories
+SELECT * FROM products
+
+WITH price_cat AS
+(SELECT
+	product_id,product_name,unit_price,
+	CASE
+	WHEN unit_price<20 THEN 'Low Price'
+	WHEN unit_price<50 THEN 'Medium Price'
+	ELSE 'High Price'
+	END AS price_category
+FROM products)
+
+SELECT price_category, COUNT(*) AS product_count, ROUND(AVG(unit_price)::numeric,2) AS Avg_price
+FROM price_cat
+GROUP BY price_category
+ORDER BY price_category;
