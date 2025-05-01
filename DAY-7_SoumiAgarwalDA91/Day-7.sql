@@ -32,12 +32,11 @@ WITH  PRICE_CAT AS
             ELSE 'High Price' END  AS price_categorY
 FROM public.products
 )
-SELECT PRICE_CAT.price_categorY,
-	COUNT(PRICE_CAT.product_id) product_count,
-	ROUND(AVG(PRICE_CAT.unit_price)::NUMERIC,2) AVG_UNIT_PRICE
-FROM public.products P INNER JOIN PRICE_CAT
-	ON P.product_id=PRICE_CAT.product_id
-	GROUP BY PRICE_CAT.price_categorY
+SELECT price_categorY,COUNT(product_id) product_count,
+ROUND(AVG(unit_price)::NUMERIC,2) AVG_UNIT_PRICE
+FROM PRICE_CAT
+GROUP BY price_categorY
+
 
 
 
