@@ -1,0 +1,48 @@
+SELECT * FROM orders
+
+SELECT EXTRACT(YEAR FROM order_date) AS Order_year,
+EXTRACT(QUARTER FROM order_date) AS order_quarter,COUNT(order_id) AS order_count,AVG(freight) AS Average_freight
+FROM orders
+WHERE freight>100
+GROUP BY 
+EXTRACT(YEAR FROM order_date),
+EXTRACT(QUARTER FROM order_date)
+ORDER BY
+order_year,
+order_quarter
+
+
+SELECT * FROM orders
+SELECT ship_region,COUNT(order_id) AS order_count,MIN(freight) AS Freight_min, MAX(freight) AS Freight_max
+FROM orders
+GROUP BY ship_region
+HAVING COUNT(order_id)>=5
+ORDER BY ship_region
+
+SELECT * FROM employees
+SELECT * FROM customers
+
+SELECT contact_title AS designation FROM customers
+UNION 
+SELECT title AS designation FROM employees;
+
+SELECT contact_title AS designation FROM customers
+UNION ALL
+SELECT title AS designation FROM employees;
+
+
+
+SELECT * FROM products
+
+SELECT category_id FROM products
+WHERE discontinued = 1 
+INTERSECT
+SELECT category_id FROM products
+WHERE units_in_stock>0
+
+
+SELECT * FROM order_details
+SELECT order_id FROM order_details
+EXCEPT
+SELECT DISTINCT order_id FROM order_details
+WHERE discount>0
