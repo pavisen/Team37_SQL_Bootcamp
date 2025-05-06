@@ -1,3 +1,5 @@
+--1.     List all customers and the products they ordered with the order date. (Inner join)
+
 SELECT * FROM customers
 SELECT * FROM products
 SELECT * FROM orders
@@ -10,6 +12,8 @@ INNER JOIN products p ON od.product_id = p.product_id
 
 
 
+--2.     Show each order with customer, employee, shipper, and product info — even if some parts are missing. (Left Join)
+
 SELECT * FROM shippers
 SELECT * FROM employees
 
@@ -21,20 +25,32 @@ LEFT JOIN products p ON od.product_id = p.product_id
 LEFT JOIN shippers s ON o.ship_via = s.shipper_id
 
 
+
+--3.     Show all order details and products (include all products even if they were never ordered). (Right Join)
+
 SELECT o.order_id,p.product_id,p.product_name,o.quantity
 FROM order_details o
 RIGHT JOIN products p ON o.product_id = p.product_id
 ORDER BY product_id
 
 
+
+--4. 	List all product categories and their products — including categories that have no products, and products that are not assigned to any category.(Outer Join)
+
 SELECT * FROM categories	
 SELECT c.category_id,c.category_name,p.product_id,p.product_name 
 FROM categories c
 FULL OUTER JOIN products p ON c.category_id = p.category_id
 
+
+--5. 	Show all possible product and category combinations (Cross join).
+
 SELECT p.product_id,p.product_name,c.category_id,c.category_name
 FROM products p
 CROSS JOIN categories c
+
+
+-- 6. 	Show all employees and their manager(Self join(left join))
 
 SELECT * FROM employees
 SELECT e.employee_id,
@@ -44,6 +60,9 @@ FROM employees e
 LEFT JOIN employees m ON e.reports_to = m.employee_id
 ORDER BY e.employee_id
 
+
+
+-- 7. 	List all customers who have not selected a shipping method.
 
 SELECT * FROM customers
 SELECT * FROM orders
